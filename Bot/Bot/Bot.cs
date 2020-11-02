@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bot.Bot
 {
-	class Bot
+	sealed class Bot
 	{
 
 	}
