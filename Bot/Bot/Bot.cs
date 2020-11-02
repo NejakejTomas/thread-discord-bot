@@ -13,14 +13,9 @@ namespace Bot.Bot
 	{
 		private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 		private readonly DiscordSocketClient _client = new();
-		private readonly IMessageHandler _handler;
+		private IMessageHandler? _handler;
 
-		public Bot()
-		{
-			_handler = new MessageHandler();
-		}
-
-		public async Task Start()
+		public async Task StartAsync()
 		{
 			string token = JsonConfig.GetConfig().Token;
 
@@ -33,10 +28,11 @@ namespace Bot.Bot
 			{
 				_logger.Info("Connected");
 
+				_handler = new MessageHandler(_client.CurrentUser);
+				_client.MessageReceived += _handler.HandleMessageAsync;
 				return Task.CompletedTask;
 			};
 
-			_client.MessageReceived += _handler.HandleMessage;
 
 			await Task.Delay(-1);
 		}

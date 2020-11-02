@@ -9,7 +9,7 @@ namespace Bot
 		static async Task Main(string[] args)
 		{
 			Bot.Bot bot = new();
-			await bot.Start();
+			await bot.StartAsync();
 		}
 	}
 }

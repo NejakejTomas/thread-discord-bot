@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Bot.Bot
 {
-	interface IMessageHandler
+	interface IHandleableMessage
 	{
-		Task HandleMessageAsync(SocketMessage message);
+		public Task<bool> HandleAsync(SocketMessage message);
 	}
 }
