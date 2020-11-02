@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Bot.Bot.MessageHandlers;
+using Discord;
 using Discord.WebSocket;
 using NLog;
 using System;
@@ -21,7 +22,8 @@ namespace Bot.Bot
 			_self = self;
 			_handlers = new List<IHandleableMessage>
 			{
-				new NewEmptyThreadMessage()
+				new NewThreadFromText(),
+				new NewEmptyThread()
 			};
 		}
 
