@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Bot;
 
 namespace Bot
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static async Task Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
+			Bot.Bot bot = new();
+			await bot.Start();
 		}
 	}
 }
