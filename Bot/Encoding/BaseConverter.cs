@@ -9,7 +9,7 @@ namespace Bot.Encoding
 {
 	static class BaseConverter
 	{
-        private static readonly char[] Alphabet = new char[] {'\u180E', '\u200B', '\u202C', '\u2060', '\u2061', '\u2062', '\u2063', '\u2064', '\u2068', '\u2069', '\u206A', '\u206B', '\u206C', '\u206D', '\u206E', '\u206F' };
+        public static readonly char[] Alphabet = new char[] {'\u180E', '\u200B', '\u202C', '\u2060', '\u2061', '\u2062', '\u2063', '\u2064', '\u2068', '\u2069', '\u206A', '\u206B', '\u206C', '\u206D', '\u206E', '\u206F' };
         private static readonly Dictionary<char, byte> AlphabetTranslation;
 
         static BaseConverter()
@@ -40,8 +40,10 @@ namespace Bot.Encoding
             return builder.ToString();
 		}
         
-        public static Span<byte> FromMyBase(ref Span<byte> buffer, string data)
+        public static byte[] FromMyBase(string data)
 		{
+            byte[] buffer = new byte[data.Length / 2];
+
             for (int i = 0; i < data.Length; i += 2)
             {
                 char first = data[i];
@@ -55,8 +57,8 @@ namespace Bot.Encoding
 
         public static string ToMyBase(ulong data)
 		{
-            Span<byte> bytes = BitConverter.GetBytes(data);
-            if (BitConverter.IsLittleEndian) bytes.Reverse();
+            byte[] bytes = BitConverter.GetBytes(data);
+            if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
 
             return ToMyBase(bytes);
 		}
