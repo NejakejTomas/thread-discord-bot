@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +51,22 @@ namespace Bot.Encoding
 			}
 
             return buffer;
+		}
+
+        public static string ToMyBase(ulong data)
+		{
+            Span<byte> bytes = BitConverter.GetBytes(data);
+            if (BitConverter.IsLittleEndian) bytes.Reverse();
+
+            return ToMyBase(bytes);
+		}
+
+        public static string ToMyBase(byte data)
+		{
+            Span<byte> byteSpan = stackalloc byte[1];
+            byteSpan[0] = data;
+
+            return ToMyBase(byteSpan);
 		}
     }
 }
