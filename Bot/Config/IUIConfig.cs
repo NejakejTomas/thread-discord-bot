@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Bot.Config
 {
-	interface IConfig : IDiscordConfig, IUIConfig { }
+	interface IUIConfig : IText { }
 }

@@ -11,5 +11,11 @@ namespace Bot.Config
 	{
 		[JsonProperty("Bot Token")]
 		public string Token { get; set; } = string.Empty;
+
+		[JsonProperty("Next Thread Text")]
+		public string NextText { get; set; } = string.Empty;
+
+		[JsonProperty("Prev Thread Text")]
+		public string PrevText { get; set; } = string.Empty;
 	}
 }

@@ -6,5 +6,9 @@ using System.Threading.Tasks;
 
 namespace Bot.Config
 {
-	interface IConfig : IDiscordConfig, IUIConfig { }
+	interface IText
+	{
+		string NextText { get; }
+		string PrevText { get; }
+	}
 }
