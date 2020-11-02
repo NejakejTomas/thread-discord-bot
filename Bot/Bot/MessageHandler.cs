@@ -22,8 +22,11 @@ namespace Bot.Bot
 			_self = self;
 			_handlers = new List<IHandleableMessage>
 			{
+				new NewThreadFromPost(),
+				new NewThreadFromPostAndText(),
 				new NewThreadFromText(),
-				new NewEmptyThread()
+				new NewEmptyThread(),
+				new ReplyToThread()
 			};
 		}
 
