@@ -17,5 +17,8 @@ namespace Bot.Config
 
 		[JsonProperty("Prev Thread Text")]
 		public string PrevText { get; set; } = string.Empty;
+
+		[JsonProperty("Delete Messages")]
+		public bool DeleteMessages { get; set; } = true;
 	}
 }

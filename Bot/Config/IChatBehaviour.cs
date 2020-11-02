@@ -6,5 +6,8 @@ using System.Threading.Tasks;
 
 namespace Bot.Config
 {
-	interface IDiscordConfig : ITokenProvider, IChatBehaviour { }
+	interface IChatBehaviour
+	{
+		bool DeleteMessages { get; }
+	}
 }

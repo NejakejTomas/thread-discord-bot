@@ -1,4 +1,5 @@
 ﻿using Bot.Bot.MessageHandlers;
+using Bot.Config;
 using Discord;
 using Discord.WebSocket;
 using NLog;
@@ -16,6 +17,7 @@ namespace Bot.Bot
 		private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 		private readonly SocketSelfUser _self;
 		private readonly IEnumerable<IHandleableMessage> _handlers;
+		private readonly IChatBehaviour _chatBehaviour = JsonConfig.GetConfig();
 
 		public MessageHandler(SocketSelfUser self)
 		{
@@ -52,8 +54,14 @@ namespace Bot.Bot
 		{
 			foreach (IHandleableMessage handler in _handlers)
 			{
-				if (await handler.HandleAsync(message) == true) return;
+				if (await handler.HandleAsync(message) == false) continue;
+
+				if (_chatBehaviour.DeleteMessages) await message.DeleteAsync();
+
+				return;
 			}
+
+			await message.AddReactionAsync(new Emoji("🤷‍♂️"));
 		}
 	}
 }
