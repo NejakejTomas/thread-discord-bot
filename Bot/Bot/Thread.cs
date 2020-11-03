@@ -15,7 +15,7 @@ namespace Bot.Bot
 	{
 		private const string EmptyChar = "\u200B";
 		private const int MaxTextLength = 5500;
-		private const int MaxEmbedsCount = 20;
+		private const int MaxFieldsCount = 20;
 		private const int UtilityFieldsCount = 2;
 		private static readonly WeakReferenceContainer<Tuple<ulong, ulong>, IUserMessage> cache = new(100_000);
 
@@ -72,7 +72,7 @@ namespace Bot.Bot
 
 			foreach (EmbedFieldBuilder embedFieldBuilder in replyMessageFields.Item1)
 			{
-				if (currentLength + FieldLength(embedFieldBuilder) > MaxTextLength || lastThreadMessage.Embeds.Count - UtilityFieldsCount + 1 > MaxTextLength)
+				if (currentLength + FieldLength(embedFieldBuilder) > MaxTextLength || lastThreadMessage.Embeds.First().Fields.Count() - UtilityFieldsCount + 1 > MaxFieldsCount)
 				{
 					Task<IUserMessage> createTask = CreateNextAsync(channel, builder.Author, builder.Color ?? new(0), lastThreadMessage);
 					builder.WithFooter($"{currentLength}/{MaxTextLength}");
@@ -155,7 +155,7 @@ namespace Bot.Bot
 
 			return int.Parse(footerText[0]);
 		}
-
+		
 		private static async Task SetPrev(IUserMessage threadMessage, string jumpUrl)
 		{
 			EmbedBuilder builder = threadMessage.Embeds.First().ToEmbedBuilder();
@@ -186,7 +186,7 @@ namespace Bot.Bot
 
 		private static int FieldLength(EmbedFieldBuilder embedFieldBuilder)
 		{
-			return ((string)embedFieldBuilder.Value).Length + ((string)embedFieldBuilder.Name).Length;
+			return ((string)embedFieldBuilder.Value).Length + embedFieldBuilder.Name.Length;
 		}
 
 		private static Tuple<IEnumerable<EmbedFieldBuilder>, int> FieldsFromText(IUser author, string text)
