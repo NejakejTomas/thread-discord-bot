@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TemporaryWorkaround.Common;
 
 namespace Bot.Bot
 {
@@ -16,6 +17,7 @@ namespace Bot.Bot
 		private const int MaxTextLength = 5500;
 		private const int MaxEmbedsCount = 20;
 		private const int UtilityFieldsCount = 2;
+		private static readonly WeakReferenceContainer<ulong, IUserMessage> wrc = new(100_000);
 
 		public static async Task<bool> CreateEmptyAsync(IMessageChannel channel, IUser author, string text = "", ulong replyTo = 0)
 		{
@@ -60,7 +62,7 @@ namespace Bot.Bot
 
 		public static async Task<bool> Reply(ulong threadMessage, IMessageChannel channel, IUser author, string text)
 		{
-			IUserMessage? thread = await channel.GetMessageAsync(threadMessage) as IUserMessage;
+			IUserMessage? thread = await GetThreadMessageAsync(threadMessage, channel);
 			if (thread == null) return false;
 
 			IUserMessage lastThreadMessage = await GetLastThreadAsync(thread);
@@ -116,12 +118,17 @@ namespace Bot.Bot
 			return placeholder;
 		}
 
+		private static async Task<IUserMessage?> GetThreadMessageAsync(ulong id, IMessageChannel channel)
+		{
+			return await channel.GetMessageAsync(id) as IUserMessage;
+		}
+
 		private static async Task<IUserMessage> GetLastThreadAsync(IUserMessage threadMessage)
 		{
 			ulong next = GetNext(threadMessage);
 			if (next == 0) return threadMessage;
 
-			return await GetLastThreadAsync((IUserMessage)await threadMessage.Channel.GetMessageAsync(next));
+			return await GetLastThreadAsync((await GetThreadMessageAsync(next, threadMessage.Channel))!);
 		}
 
 		private static ulong GetNext(IUserMessage threadMessage)
