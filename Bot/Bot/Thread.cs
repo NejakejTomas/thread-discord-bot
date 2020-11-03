@@ -17,7 +17,7 @@ namespace Bot.Bot
 		private const int MaxTextLength = 5500;
 		private const int MaxEmbedsCount = 20;
 		private const int UtilityFieldsCount = 2;
-		private static readonly WeakReferenceContainer<Tuple<ulong, ulong>, IUserMessage> wrc = new(100_000);
+		private static readonly WeakReferenceContainer<Tuple<ulong, ulong>, IUserMessage> cache = new(100_000);
 
 		public static async Task<bool> CreateEmptyAsync(IMessageChannel channel, IUser author, string text = "", ulong replyTo = 0)
 		{
@@ -120,12 +120,14 @@ namespace Bot.Bot
 
 		private static async Task<IUserMessage?> GetThreadMessageAsync(ulong id, IMessageChannel channel)
 		{
-			IUserMessage? thread = wrc.Get(new Tuple<ulong, ulong>(channel.Id, id));
+			IUserMessage? thread;
+
+			lock (cache) thread = cache.Get(new Tuple<ulong, ulong>(channel.Id, id));
 
 			if (thread != null) return thread;
 
 			thread = await channel.GetMessageAsync(id) as IUserMessage;
-			if (thread != null) wrc.Add(new Tuple<ulong, ulong>(channel.Id, id), thread);
+			if (thread != null) lock (cache) cache.Add(new Tuple<ulong, ulong>(channel.Id, id), thread);
 
 			return thread;
 		}
